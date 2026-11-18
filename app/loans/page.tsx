@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import { prisma } from '../lib/prisma';
+import { returnBook } from './actions';
 
 export default async function LoansPage() {
-  // Получаем все выдачи, включая данные о книге и читателе
   const loans = await prisma.loan.findMany({
     include: {
       book: true,
@@ -33,28 +33,41 @@ export default async function LoansPage() {
               <th className="py-3 px-4">Читатель</th>
               <th className="py-3 px-4">Дата выдачи</th>
               <th className="py-3 px-4">Статус</th>
+              <th className="py-3 px-4 text-center">Действие</th>
             </tr>
           </thead>
           <tbody className="text-gray-600 text-sm font-light">
             {loans.length === 0 ? (
               <tr>
-                <td colSpan={4} className="py-4 px-4 text-center text-gray-500">
+                <td colSpan={5} className="py-4 px-4 text-center text-gray-500">
                   Пока нет ни одной выдачи. Нажмите «+ Выдать книгу».
                 </td>
               </tr>
             ) : (
-              loans.map((loan) => (
-                <tr key={loan.id} className="border-b border-gray-200 hover:bg-gray-50">
-                  <td className="py-3 px-4 font-medium text-gray-800">{loan.book.title}</td>
-                  <td className="py-3 px-4">{loan.reader.fullName}</td>
-                  <td className="py-3 px-4">{new Date(loan.loanDate).toLocaleDateString('ru-RU')}</td>
-                  <td className="py-3 px-4">
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700">
-                      {loan.status === 'ACTIVE' ? 'На руках' : 'Возвращена'}
-                    </span>
-                  </td>
-                </tr>
-              ))
+              loans.map((loan) => {
+                const returnBookWithIds = returnBook.bind(null, loan.id, loan.bookId);
+                return (
+                  <tr key={loan.id} className="border-b border-gray-200 hover:bg-gray-50">
+                    <td className="py-3 px-4 font-medium text-gray-800">{loan.book.title}</td>
+                    <td className="py-3 px-4">{loan.reader.fullName}</td>
+                    <td className="py-3 px-4">{new Date(loan.loanDate).toLocaleDateString('ru-RU')}</td>
+                    <td className="py-3 px-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${loan.status === 'ACTIVE' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'}`}>
+                        {loan.status === 'ACTIVE' ? 'На руках' : 'Возвращена'}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 text-center">
+                      {loan.status === 'ACTIVE' && (
+                        <form action={returnBookWithIds}>
+                          <button type="submit" className="bg-green-500 text-white px-3 py-1 rounded text-xs hover:bg-green-600 transition">
+                            Вернуть
+                          </button>
+                        </form>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>

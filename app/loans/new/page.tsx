@@ -4,9 +4,8 @@ import { revalidatePath } from 'next/cache';
 import Link from 'next/link';
 
 export default async function NewLoanPage() {
-  // Берем только те книги, которые есть в наличии, и всех читателей
   const books = await prisma.book.findMany({
-    where: { copiesAvailable: { gt: 0 } }, // gt: 0 означает "больше нуля"
+    where: { copiesAvailable: { gt: 0 } },
     orderBy: { title: 'asc' },
   });
   const readers = await prisma.reader.findMany({ orderBy: { fullName: 'asc' } });
@@ -16,27 +15,18 @@ export default async function NewLoanPage() {
     const bookId = parseInt(formData.get('bookId') as string);
     const readerId = parseInt(formData.get('readerId') as string);
 
-    // Устанавливаем срок возврата - 14 дней от сегодня
     const dueDate = new Date();
     dueDate.setDate(dueDate.getDate() + 14);
 
-    // 1. Создаем запись о выдаче
     await prisma.loan.create({
-      data: {
-        bookId,
-        readerId,
-        dueDate,
-        status: 'ACTIVE',
-      },
+      data: { bookId, readerId, dueDate, status: 'ACTIVE' },
     });
 
-    // 2. Уменьшаем количество доступных книг на 1
     await prisma.book.update({
       where: { id: bookId },
-      data: { copiesAvailable: { decrement: 1 } }, // decrement уменьшает значение
+      data: { copiesAvailable: { decrement: 1 } },
     });
 
-    // Обновляем страницы и перекидываем на журнал выдач
     revalidatePath('/loans');
     revalidatePath('/books');
     revalidatePath('/');
