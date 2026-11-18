@@ -9,13 +9,20 @@ export default async function BooksPage() {
 
   return (
     <div className="p-8 max-w-5xl mx-auto">
+      {/* Шапка страницы с кнопками */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Каталог книг</h1>
-        <Link href="/" className="text-blue-600 hover:underline font-medium">
-          &larr; На главную
-        </Link>
+        <div className="flex gap-4">
+          <Link href="/books/new" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+            + Добавить книгу
+          </Link>
+          <Link href="/" className="text-blue-600 hover:underline font-medium self-center">
+            &larr; На главную
+          </Link>
+        </div>
       </div>
 
+      {/* Таблица с книгами */}
       <div className="bg-white shadow-md rounded-lg overflow-hidden">
         <table className="w-full text-left border-collapse">
           <thead>
