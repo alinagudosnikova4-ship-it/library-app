@@ -30,8 +30,8 @@ export default async function Home() {
         <Link href="/books" className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
           Перейти к каталогу книг
         </Link>
-        <Link href="/readers" className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition">
-          Список читателей
+        <Link href="/loans" className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition">
+          Журнал выдач
         </Link>
       </div>
     </div>
