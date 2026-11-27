@@ -1,3 +1,5 @@
+git clone https://github.com/alinagudosnikova4-ship-it/library-app.git .
+
 1. Установка библиотек: npm install
 
 2. Подготовка базы (генерация клиента): npx prisma generate
