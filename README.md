@@ -7,3 +7,5 @@
 4. Заполнение базы книгами и читателями: npx tsx prisma/seed.ts
 
 5. Запуск сайта: npm run dev
+
+http://localhost:3000
